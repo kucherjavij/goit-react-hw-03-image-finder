@@ -1,29 +1,50 @@
 import React, { Component } from 'react';
+import {SearchbarConteiner, SearchFormButton, SearchFormInput, SearchForm} from './Searchbar.styled'
+
 
 class Searchbar extends Component {
 
-componentDidMount() {
-    fetch('https://pixabay.com/api/?q=cat&page=1&key=23697885-1be4d713ea150551106b2a392&image_type=photo&orientation=horizontal&per_page=12').then(resp=> resp.json).then(data=>console.log(data))
-}
+    state = {
+
+        pictureName: ''
+
+        };
+        
+
+        onPictureNameChange = evt => {
+this.setState({pictureName: evt.currentTarget.value.toLowerCase()})
+
+        }
+
+        onHandleSubmit = evt => {
+            evt.preventDefault()
+            if (this.state.pictureName.trim() === '') {
+                return alert('please fill')
+            }
+this.props.onSubmit(this.state.pictureName)
+            this.setState({pictureName: ''})
+        }
 
     render() { 
-        return <div>
-           <header class="searchbar">
-  <form class="form">
-    <button type="submit" class="button">
-      <span class="button-label">Search</span>
-    </button>
+        return <SearchbarConteiner>
+           <header>
+  <SearchForm onSubmit={this.onHandleSubmit}>
+    <SearchFormButton type="submit">
+      <span>Search</span>
+    </SearchFormButton>
 
-    <input
-      class="input"
+    <SearchFormInput
+    name='pictureName'
+    value={this.state.pictureName}
       type="text"
-      autocomplete="off"
-      autofocus
-      placeholder="Search images and photos"
+      autoComplete="off"
+      autoFocus
+      placeholder="Search images"
+    onChange={this.onPictureNameChange}
     />
-  </form>
+  </SearchForm>
 </header>
-        </div>;
+        </SearchbarConteiner>;
     }
 }
  

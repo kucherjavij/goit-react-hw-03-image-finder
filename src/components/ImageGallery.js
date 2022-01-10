@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ImageGalleryItem from './ImageGalleryItem'
 import {ImageGalleryList} from './ImageGalleryItem.styled'
+import fetchIMG from './API';
 
 class ImageGallery extends Component {
 
@@ -19,34 +20,20 @@ componentDidUpdate(prevProps, prevState) {
     
     if (prevName !== nextName) {
         this.setState({status: 'pending'});
-        fetch(`https://pixabay.com/api/?q=${nextName}&page=${nextPage}&key=23697885-1be4d713ea150551106b2a392&image_type=photo&orientation=horizontal&per_page=12`)
-        .then(response => {
-            if (response.ok) {
-               return response.json()
-            }
-            return Promise.reject(new Error(`Sorry we do not have ${this.props.pictureName}`))
-
-        })
+        fetchIMG(nextName, 1)
         .then(picture => this.setState({picture: picture.hits, status: 'resolved'}))
         .catch(error => this.setState({error, status: 'rejected'}) )
-        
+        return
     }
 
     if (prevPage !== nextPage) {
-        fetch(`https://pixabay.com/api/?q=${nextName}&page=${nextPage}&key=23697885-1be4d713ea150551106b2a392&image_type=photo&orientation=horizontal&per_page=12`)
-        .then(response => {
-            if (response.ok) {
-               return response.json()
-            }
-            return Promise.reject(new Error(`Sorry we do not have ${this.props.pictureName}`))
-
-        })
+        fetchIMG(nextName, this.props.page)
         .then(picture => this.setState({picture: [
             ...prevState.picture,
             ...picture.hits,
           ], status: 'resolved'}))
         .catch(error => this.setState({error, status: 'rejected'}) )}
-
+return
 }
 
 
